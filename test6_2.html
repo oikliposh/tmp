@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Art</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/background.jpg'); /* Change this to the path of your background image */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center; /* Center the image */
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            transition: background-color 0.3s;
+        }
+        #main {
+            background: rgba(240, 240, 240, 0.9); /* Semi-transparent background for better visibility */
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #main.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #entry, #dates, #photoDisplay {
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #357ab8;
+        }
+        .dates-section {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        .date-buttons {
+            margin-bottom: 20px;
+        }
+        .photo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the contents */
+            margin-top: 20px;
+        }
+        .photos {
+            display: flex;
+            justify-content: center; /* Center the photos */
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .photos img {
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+        .photos img:hover {
+            transform: scale(1.05);
+        }
+        .message-box {
+            width: 80%; /* Set to a reasonable size */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Arial', sans-serif;
+            margin-top: 10px;
+            text-align: center; /* Center align the text */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="main" class="show">
+    <div id="entry">
+        <p id="message"></p>
+        <button class="button" id="nextButton" onclick="nextMessage()">Next</button>
+    </div>
+
+    <div id="dates" class="hidden">
+        <h2>pick a date ! </h2>
+        <div class="date-buttons" id="dateButtons"></div>
+        <button class="button hidden" id="backButton" onclick="showEntry()">Back</button>
+    </div>
+
+    <div id="photoDisplay" class="hidden">
+        <div class="photo-container">
+            <p id="photoMessage" class="message-box"></p>
+            <div class="photos" id="photoContainer"></div>
+            <button class="button" id="backToDates" onclick="showDates()">Back to Dates</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const messages = [
+        "Happy Birthday Artsie!", 
+        "Hi, Art! It’s Thea ;))",
+        "Happy 19th Birthday!!",
+        "I was thinking what to give you, since this will be your last birthday na we will be together.",
+        "And since I'm not as good as you in writing handwritten letters...",
+        "I thought why not show you in the language I know ;)"
+    ];
+
+    const dates = [
+        { date: "January 27, 2023", photos: ["photo1.JPG", "photo2.JPG", "photo3.JPG", "photo4.JPG"], message: "lowkey was excited here, cause lhana told me i'd be meeting u ;)" },
+        { date: "May 5, 2023", photos: ["photo5.JPG", "photo6.JPG", "photo7.JPG", "photo8.JPG", "photo9.JPG"], message: "this was our second meet up na, cinco de mayo !! " },
+        { date: "August 26, 2023", photos: ["photo10.JPG", "photo11.JPG", "photo12.JPG", "photo13.JPG"], message: "i still remember na u told me to bring a friend, and i brought dee even if hindi kami super close that time and still somehow that night was really fun (i died)" },
+        { date: "August 23, 2023", photos: ["photo14.JPG", "photo15.JPG", "photo16.JPG", "photo17.JPG"], message: "first iyak together bc of lhana !! hahaha i was so hesitant pa to give u a hug bc i wasn't sure what u needed pero you read my mind and said \"can you give me a hug par\" core memory" },
+        { date: "May 29, 2023", photos: ["photo17.JPG", "photo18.JPG", "photo19.JPG", "photo20.JPG", "photo21.JPG", "photo25.JPG"], message: "omygod pls, everything started from here. first heartbreak. thank god for that night" },
+        { date: "March 17, 2024", photos: ["photo22.JPG", "photo23.JPG", "photo24.JPG"], message: "mhm, u really got wasted here hahahaha tangina mo sinong uuwi bigla ng lacson while we were upstairs partying sa blackboox." },
+        { date: "April 25, 2024", photos: ["photo26.JPG", "photo27.JPG", "photo28.JPG", "photo29.JPG", "photo30.JPG"], message: "rage room, dinner and fake ass life story sa grab hahahahahahaha" },
+        { date: "May 3, 2024", photos: ["photo31.JPG", "photo32.JPG", "photo33.JPG"], message: "this was lowkey a normal day for us pero i can't help but still see it as a very memorable day for us. we literally went for 4 am jog and grabbed a coffee while also studying ng 7am. we were both so sleepy here omg" },
+        { date: "April 29, 2024", photos: ["photo34.JPG", "photo35.JPG", "photo36.JPG"], message: "coffee, thriftshop and lerma :)" },
+        { date: "May 19, 2024", photos: ["photo37.JPG", "photo38.JPG", "photo39.JPG", "photo40.JPG"], message: "the day you died and got resurrected by me lol. the rooft and usth and NOT THE \"the bereal ka nga\" kahit nasa er ka na kuya hahahaha" },
+        { date: "August 26, 2024", photos: ["photo41.JPG", "photo42.JPG", "photo43.JPG", "photo44.JPG"], message: "and our second bouldering together !! " }
+    ];
+
+    let entryIndex = 0;
+
+    function showEntry() {
+        document.getElementById('message').innerText = messages[entryIndex];
+        showSection('entry');
+    }
+
+    function nextMessage() {
+        entryIndex++;
+        if (entryIndex < messages.length) {
+            showEntry();
+        } else {
+            showSection('dates');
+            showDates();
+        }
+    }
+
+    function showSection(sectionId) {
+        const sections = ['entry', 'dates', 'photoDisplay'];
+        sections.forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(sectionId).classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById(sectionId).style.opacity = 1;
+        }, 50);
+    }
+
+    function showDates() {
+        const dateButtons = document.getElementById('dateButtons');
+        dateButtons.innerHTML = '';
+        dates.forEach((date, index) => {
+            const button = document.createElement('button');
+            button.innerText = date.date;
+            button.className = 'button';
+            button.onclick = () => showPhotos(index);
+            dateButtons.appendChild(button);
+        });
+        showSection('dates');
+    }
+
+    function showPhotos(dateIndex) {
+        const date = dates[dateIndex];
+        document.getElementById('photoMessage').innerText = date.message;
+        const photoContainer = document.getElementById('photoContainer');
+        photoContainer.innerHTML = ''; // Clear existing photos
+        date.photos.forEach(photo => {
+            const img = document.createElement('img');
+            img.src = 'images/' + photo; // Update this to your images folder
+            photoContainer.appendChild(img);
+        });
+        showSection('photoDisplay');
+    }
+
+    showEntry();
+</script>
+
+</body>
+</html>
